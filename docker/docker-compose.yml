@@ -2,10 +2,14 @@ version: "3.8"
 
 services:
   mariadb:
-    image: mariadb:10.6
+    image: mariadb:10.8
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: frappe
+      MYSQL_ROOT_PASSWORD: 123
     volumes:
       - mariadb-data:/var/lib/mysql
 
