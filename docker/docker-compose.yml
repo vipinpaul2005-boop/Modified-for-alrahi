@@ -16,20 +16,20 @@ services:
   redis:
     image: redis:alpine
 
-  frappe:
-    image: frappe/bench:latest
-    command: bash /workspace/init.sh
-    environment:
-      - SHELL=/bin/bash
-    working_dir: /home/frappe
-    volumes:
-      - .:/workspace
-    ports:
-      - "8000:8000"
-      - "9000:9000"
-    depends_on:
-      - mariadb
-      - redis
+ frappe:
+  image: frappe/bench:latest
+  command: bash /workspace/init.sh
+  environment:
+    - SHELL=/bin/bash
+  working_dir: /home/frappe
+  volumes:
+    - .:/workspace
+  ports:
+    - "8081:8000"
+    - "9001:9000"
+  depends_on:
+    - mariadb
+    - redis
 
 volumes:
   mariadb-data:
