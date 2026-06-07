@@ -1,9 +1,12 @@
 #!/bin/bash
 set -e
 
-if [ -d "/home/frappe/frappe-bench/apps/frappe" ]; then
+SITE_NAME="hralrahi.com"
+BENCH_DIR="/home/frappe/frappe-bench"
+
+if [ -d "${BENCH_DIR}/apps/frappe" ]; then
   echo "Bench already exists, applying config and starting"
-  cd /home/frappe/frappe-bench
+  cd "${BENCH_DIR}"
 
   export PATH="${NVM_DIR}/versions/node/v${NODE_VERSION_DEVELOP}/bin/:${PATH}"
 
@@ -15,8 +18,24 @@ if [ -d "/home/frappe/frappe-bench/apps/frappe" ]; then
   sed -i '/redis/d' ./Procfile || true
   sed -i '/watch/d' ./Procfile || true
 
-  bench use hralrahi.com || true
-  bench --site hralrahi.com clear-cache || true
+  if [ ! -d "${BENCH_DIR}/sites/${SITE_NAME}" ]; then
+    echo "Site ${SITE_NAME} does not exist, creating site"
+
+    bench new-site "${SITE_NAME}" \
+      --force \
+      --mariadb-root-password 123 \
+      --admin-password admin \
+      --no-mariadb-socket
+
+    bench --site "${SITE_NAME}" install-app erpnext
+    bench --site "${SITE_NAME}" install-app hrms
+    bench --site "${SITE_NAME}" set-config developer_mode 1
+    bench --site "${SITE_NAME}" enable-scheduler
+    bench --site "${SITE_NAME}" clear-cache
+  fi
+
+  bench use "${SITE_NAME}" || true
+  bench --site "${SITE_NAME}" clear-cache || true
 
   bench start
   exit 0
@@ -27,7 +46,7 @@ echo "Creating new bench..."
 export PATH="${NVM_DIR}/versions/node/v${NODE_VERSION_DEVELOP}/bin/:${PATH}"
 
 bench init --skip-redis-config-generation frappe-bench
-cd /home/frappe/frappe-bench
+cd "${BENCH_DIR}"
 
 bench set-mariadb-host mariadb
 bench set-redis-cache-host redis://redis:6379
@@ -40,17 +59,17 @@ sed -i '/watch/d' ./Procfile || true
 bench get-app erpnext
 bench get-app hrms
 
-bench new-site hralrahi.com \
+bench new-site "${SITE_NAME}" \
   --force \
   --mariadb-root-password 123 \
   --admin-password admin \
   --no-mariadb-socket
 
-bench --site hralrahi.com install-app erpnext
-bench --site hralrahi.com install-app hrms
-bench --site hralrahi.com set-config developer_mode 1
-bench --site hralrahi.com enable-scheduler
-bench --site hralrahi.com clear-cache
+bench --site "${SITE_NAME}" install-app erpnext
+bench --site "${SITE_NAME}" install-app hrms
+bench --site "${SITE_NAME}" set-config developer_mode 1
+bench --site "${SITE_NAME}" enable-scheduler
+bench --site "${SITE_NAME}" clear-cache
 
-bench use hralrahi.com
+bench use "${SITE_NAME}"
 bench start
