@@ -26,17 +26,17 @@ sed -i '/watch/d' ./Procfile
 bench get-app erpnext
 bench get-app hrms
 
-bench new-site hr.alrahigroup.com \
+bench new-site hralrahi.com \
   --force \
   --mariadb-root-password 123 \
   --admin-password admin \
   --no-mariadb-socket
 
-bench --site hr.alrahigroup.com install-app erpnext
-bench --site hr.alrahigroup.com install-app hrms
-bench --site hr.alrahigroup.com set-config developer_mode 1
-bench --site hr.alrahigroup.com enable-scheduler
-bench --site hr.alrahigroup.com clear-cache
+bench --site hralrahi.com install-app erpnext
+bench --site hralrahi.com install-app hrms
+bench --site hralrahi.com set-config developer_mode 1
+bench --site hralrahi.com enable-scheduler
+bench --site hralrahi.com clear-cache
 
-bench use hr.alrahigroup.com
+bench use hralrahi.com
 bench start
